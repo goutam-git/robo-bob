@@ -67,7 +67,7 @@ pipeline {
                     withEnv(["KUBECONFIG=${KUBECONFIG}"]) {
                         sh '''
                             kubectl apply -f k8/robo-bob-deployment.yaml
-                            kubectl rollout status deployment/robo-bob
+                            kubectl rollout status deployment/robo-bob-deployment
                             '''
                      }
                 }
