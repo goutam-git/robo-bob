@@ -23,7 +23,14 @@ pipeline {
                 }
             }
         }
-
+        stage('Build with Maven') {
+                    steps {
+                        script {
+                            echo 'Building with Maven...'
+                            sh 'mvn clean package -DskipTests'
+                        }
+                    }
+         }
         stage('Docker Login') {
             steps {
                 script {
