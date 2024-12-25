@@ -6,6 +6,7 @@ pipeline {
         DOCKER_IMAGE = 'gghoshdocker/robo-bob:1.0'
         BRANCH_NAME = 'branch-1.2'
         GITHUB_REPO = 'https://github.com/goutam-git/robo-bob.git'
+        KUBECONFIG = '/home/jenkins/.kube/config'
     }
 
     stages {
@@ -64,10 +65,12 @@ pipeline {
             steps {
                 script {
                     echo 'Deploying to Kubernetes...'
-                    sh """
-                        kubectl apply -f k8/robo-bob-deployment.yaml
-                        kubectl rollout status deployment/robo-bob
-                    """
+                    withEnv(["KUBECONFIG=${KUBECONFIG}"]) {
+                        sh '''
+                            kubectl apply -f k8/robo-bob-deployment.yaml
+                            kubectl rollout status deployment/robo-bob
+                        '''
+                    }
                 }
             }
         }
