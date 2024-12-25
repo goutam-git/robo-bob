@@ -5,7 +5,7 @@ pipeline {
         DOCKER_HUB_CREDENTIALS = credentials('gghoshdocker')  // Docker Hub creds
         DOCKER_IMAGE = 'gghoshdocker/robo-bob:1.0'
         BRANCH_NAME = 'main'
-        GITHUB_REPO = 'https://github.com/gghoshdocker/robo-bob.git'
+        GITHUB_REPO = 'https://github.com/goutam-git/robo-bob.git'
     }
 
     stages {
