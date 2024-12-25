@@ -65,12 +65,11 @@ pipeline {
             steps {
                 script {
                     echo 'Deploying to Kubernetes...'
-                    withEnv(["KUBECONFIG=${KUBECONFIG}"]) {
-                        sh '''
-                            kubectl apply -f k8/robo-bob-deployment.yaml
-                            kubectl rollout status deployment/robo-bob
-                        '''
-                    }
+                    sh """
+                        kubectl apply -f k8/robo-bob-deployment.yaml
+                        kubectl port-forward deploy/robo-bob-deployment 8080:8080
+                        kubectl rollout status deployment/robo-bob
+                    """
                 }
             }
         }
