@@ -2,57 +2,53 @@ pipeline {
     agent any
 
     environment {
-        GITHUB_REPO = 'https://github.com/goutam-git/robo-bob.git'
-        DOCKER_IMAGE = 'yourdockerhubusername/robo-bob'
-        DOCKER_TAG = '1.0'
-        K8S_DEPLOYMENT = 'robo-bob-deployment.yaml'
+        DOCKER_HUB_CREDENTIALS = credentials('gghoshdocker')  // Docker Hub creds
+        DOCKER_IMAGE = 'gghoshdocker/robo-bob:1.0'
         BRANCH_NAME = 'main'
+        GITHUB_REPO = 'https://github.com/gghoshdocker/robo-bob.git'
     }
 
     stages {
-
         stage('Clone Repository') {
             steps {
                 script {
-                    echo 'Cloning repository...'
+                    echo 'Cloning GitHub repository...'
                     checkout scmGit(
                         branches: [[name: BRANCH_NAME]],
                         userRemoteConfigs: [[
                             url: GITHUB_REPO,
-                            credentialsId: 'github-token'
+                            credentialsId: 'goutam-git'  // GitHub PAT
                         ]]
                     )
                 }
             }
         }
 
-        stage('Build Application') {
+        stage('Docker Login') {
             steps {
                 script {
-                    echo 'Building with Maven...'
-                    sh 'mvn clean package -DskipTests'
+                    echo 'Logging in to Docker Hub...'
+                    sh """
+                      docker login -u \$DOCKER_HUB_CREDENTIALS_USR -p \$DOCKER_HUB_CREDENTIALS_PSW
+                       """
                 }
             }
         }
 
-        stage('Run Tests') {
-            steps {
-                script {
-                    echo 'Running tests...'
-                    sh 'mvn test'
-                }
-            }
-        }
-
-        stage('Docker Build and Push') {
+        stage('Build Docker Image') {
             steps {
                 script {
                     echo 'Building Docker image...'
-                    sh """
-                    docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
-                    echo ${env.DOCKER_HUB_TOKEN} | docker login -u ${env.DOCKER_HUB_USER} --p
-                    docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
-                    """
+                    sh "docker build -t ${DOCKER_IMAGE} ."
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    echo 'Pushing Docker image to Docker Hub...'
+                    sh "docker push ${DOCKER_IMAGE}"
                 }
             }
         }
@@ -62,8 +58,8 @@ pipeline {
                 script {
                     echo 'Deploying to Kubernetes...'
                     sh """
-                    kubectl apply -f k8/${K8S_DEPLOYMENT}
-                    kubectl rollout status deployment/robo-bob
+                        kubectl apply -f k8/robo-bob-deployment.yaml
+                        kubectl rollout status deployment/robo-bob
                     """
                 }
             }
@@ -72,10 +68,10 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline completed successfully.'
+            echo "Pipeline executed successfully! Docker image pushed and deployed."
         }
         failure {
-            echo 'Pipeline failed.'
+            echo "Pipeline failed at some stage."
         }
     }
 }
