@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('gghoshdocker')  // Docker Hub creds
         DOCKER_IMAGE = 'gghoshdocker/robo-bob:1.0'
-        BRANCH_NAME = 'main'
+        BRANCH_NAME = 'branch-1.2'
         GITHUB_REPO = 'https://github.com/goutam-git/robo-bob.git'
     }
 
