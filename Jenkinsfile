@@ -61,20 +61,19 @@ pipeline {
             }
         }
 
-        stages {
-            stage('Deploy to Kubernetes') {
-                steps {
-                    script {
-                        withEnv(["KUBECONFIG=${KUBECONFIG}"]) {
-                            sh '''
-                                kubectl apply -f k8/robo-bob-deployment.yaml
-                                kubectl rollout status deployment/robo-bob
-                                '''
-                         }
-                    }
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    withEnv(["KUBECONFIG=${KUBECONFIG}"]) {
+                        sh '''
+                            kubectl apply -f k8/robo-bob-deployment.yaml
+                            kubectl rollout status deployment/robo-bob
+                            '''
+                     }
                 }
             }
         }
+
     }
 
     post {
