@@ -11,8 +11,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,31 +34,30 @@ public class FileQuestionRepositoryTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        // Prepare some mock data
-        Question q1 = new Question();
-        q1.setId("q1");
-        q1.setQuestion("What is your name");
-        q1.setAnswer("RoboBob");
-        q1.setType("BASIC");
-        q1.setAskedAt("2024-12-21T10:00:00");
+        // Prepare mock questions
+        Question q1 = new Question("q1", "What is your name", "RoboBob", "BASIC", "2024-12-21T10:00:00");
+        Question q2 = new Question("q2", "How are you", "I am fine", "BASIC", "2024-12-21T10:05:00");
+        mockQuestions = new Question[]{q1, q2};
 
-        Question q2 = new Question();
-        q2.setId("q2");
-        q2.setQuestion("How are you");
-        q2.setAnswer("I am fine");
-        q2.setType("BASIC");
-        q2.setAskedAt("2024-12-21T10:05:00");
+        // Simulate JSON file content
+        String mockJson = """
+            [
+              { "id": "q1", "question": "What is your name", "answer": "RoboBob", "type": "BASIC", "askedAt": "2024-12-21T10:00:00" },
+              { "id": "q2", "question": "How are you", "answer": "I am fine", "type": "BASIC", "askedAt": "2024-12-21T10:05:00" }
+            ]
+        """;
+        InputStream mockInputStream = new ByteArrayInputStream(mockJson.getBytes(StandardCharsets.UTF_8));
 
-        mockQuestions = new Question[]{ q1, q2 };
-
-        // Configure  mockObjectMapper to return mockQuestions
+        // Mock ObjectMapper to read InputStream
         when(mockObjectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false))
                 .thenReturn(mockObjectMapper);
-
-        when(mockObjectMapper.readValue(any(File.class), ArgumentMatchers.eq(Question[].class)))
+        when(mockObjectMapper.readValue(any(InputStream.class), ArgumentMatchers.eq(Question[].class)))
                 .thenReturn(mockQuestions);
 
-        // Now we manually call the repository method that uses ObjectMapper.
+        // Inject the mock InputStream by creating a new repository with the mock file name
+        fileQuestionRepository = new FileQuestionRepository(mockObjectMapper);
+
+        // Manually call the method
         fileQuestionRepository.loadQuestionsAndAnswers();
     }
 

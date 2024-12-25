@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: robo-bob-deployment
+  labels:
+    app: robo-bob
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: robo-bob
+  template:
+    metadata:
+      labels:
+        app: robo-bob
+    spec:
+      containers:
+        - name: robo-bob-container
+          image: gghoshdocker/robo-bob:1.0
+          ports:
+            - containerPort: 8080
+          env:
+          # Optionally pass environment variables, e.g.:
+          # - name: SPRING_PROFILES_ACTIVE
+          #   value: "prod"
+          # - name: SOME_CONFIG
+          #   valueFrom:
+          #     configMapKeyRef:
+          #       name: your-config
+          #       key: some_config_key
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
