@@ -18,4 +18,4 @@ is under src/main/java</br>
 <H5>CICD</H5>
 <br> A Jenkins pipeline is used to automate the entire workflow</br>
 <br>JenkinsFile is created for managing the pipeline</br>
-<br><img src="src/main/resources/images/robo-bob-pipeline [Jenkins].png" style="float:left"></br>
+<br><img src="src/main/resources/images/robo-bob-pipeline-Jenkins.png" style="float:left"></br>
