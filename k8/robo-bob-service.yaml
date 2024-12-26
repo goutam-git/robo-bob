@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: robo-bob-service
+  labels:
+    app: robo-bob
+spec:
+  selector:
+    app: robo-bob
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  type: ClusterIP
