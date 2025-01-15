@@ -1,4 +1,3 @@
-# Project variables
 IMAGE_NAME   := gghoshdocker/robo-bob
 IMAGE_TAG    := 1.2
 CONTAINER    := $(IMAGE_NAME):$(IMAGE_TAG)
@@ -9,17 +8,18 @@ K8S_SERVICE    := k8s/robo-bob-service.yaml
 
 # 1) Build: compile & package the Spring Boot JAR
 build:
-\tmvn clean package
+	#mvn clean install  (if needed)
+	mvn clean package
 
 # 2) Docker Build
 docker:
-\tdocker build -t $(CONTAINER) .
+	docker build -t $(CONTAINER) .
 
 # 3) Docker Push
 push:
-\tdocker push $(CONTAINER)
+	docker push $(CONTAINER)
 
 # 4) Kubernetes Deployment
 deploy:
-\tkubectl apply -f $(K8S_DEPLOYMENT)
-\tkubectl apply -f $(K8S_SERVICE)
+	kubectl apply -f $(K8S_DEPLOYMENT)
+	kubectl apply -f $(K8S_SERVICE)
