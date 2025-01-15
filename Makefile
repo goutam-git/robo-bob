@@ -14,3 +14,4 @@ docker-push:
 k8-deploy:
 	kubectl apply -f k8/robo-bob-deployment.yaml
 	kubectl apply -f k8/robo-bob-service.yaml
+	kubectl rollout status deployment/robo-bob-deployment
