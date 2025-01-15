@@ -5,14 +5,12 @@ CONTAINER := $(IMAGE):$(TAG)
 build:
 	mvn clean package
 
-docker:
+docker-build:
 	docker build -t $(CONTAINER) .
 
-docker-build: docker
-
-push:
+docker-push:
 	docker push $(CONTAINER)
 
-deploy:
+k8-deploy:
 	kubectl apply -f k8s/robo-bob-deployment.yaml
 	kubectl apply -f k8s/robo-bob-service.yaml
