@@ -1,6 +1,6 @@
 # Project variables
 IMAGE_NAME   := gghoshdocker/robo-bob
-IMAGE_TAG    := 1.0
+IMAGE_TAG    := 1.2
 CONTAINER    := $(IMAGE_NAME):$(IMAGE_TAG)
 
 # K8s manifest files
@@ -23,6 +23,3 @@ push:
 deploy:
 \tkubectl apply -f $(K8S_DEPLOYMENT)
 \tkubectl apply -f $(K8S_SERVICE)
-
-# Convenience target: build jar, then docker, then push
-docker-push: build docker push

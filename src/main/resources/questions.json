@@ -8,5 +8,15 @@
     "id": "q2",
     "question": "How are you",
     "answer": "I am fine"
+  },
+  {
+    "id": "q3",
+    "question": "How is the weather",
+    "answer": "Weather is cold"
+  },
+  {
+    "id": "q4",
+    "question": "How old are you",
+    "answer": "I am one month old"
   }
 ]

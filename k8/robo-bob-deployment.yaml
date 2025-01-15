@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: robo-bob-container
-          image: gghoshdocker/robo-bob:1.0
+          image: gghoshdocker/robo-bob:1.2
           ports:
             - containerPort: 8080
           env:

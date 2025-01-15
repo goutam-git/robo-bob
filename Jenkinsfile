@@ -3,8 +3,8 @@ pipeline {
 
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('gghoshdocker')  // Docker Hub creds
-        DOCKER_IMAGE = 'gghoshdocker/robo-bob:1.0'
-        BRANCH_NAME = 'branch-1.2'
+        DOCKER_IMAGE = 'gghoshdocker/robo-bob:1.2'
+        BRANCH_NAME = 'branch-1.3'
         GITHUB_REPO = 'https://github.com/goutam-git/robo-bob.git'
         KUBECONFIG = '/var/lib/jenkins/.kube/config'
     }
@@ -27,8 +27,8 @@ pipeline {
         stage('Build with Maven') {
                     steps {
                         script {
-                            echo 'Building with Maven...'
-                            sh 'mvn clean package -DskipTests'
+                                echo 'Running Make: build...'
+                                sh 'make build'
                         }
                     }
          }
@@ -46,8 +46,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    echo 'Building Docker image...'
-                    sh "docker build -t ${DOCKER_IMAGE} ."
+                    echo 'Running Make: docker-build...'
+                    sh 'make docker-build'
                 }
             }
         }
@@ -55,8 +55,8 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    echo 'Pushing Docker image to Docker Hub...'
-                    sh "docker push ${DOCKER_IMAGE}"
+                    echo 'Running Make: docker-push...'
+                    sh 'make docker-push'
                 }
             }
         }
@@ -65,10 +65,8 @@ pipeline {
             steps {
                 script {
                     withEnv(["KUBECONFIG=${KUBECONFIG}"]) {
-                        sh '''
-                            kubectl apply -f k8/robo-bob-deployment.yaml
-                            kubectl rollout status deployment/robo-bob-deployment
-                            '''
+                        echo 'Running Make: k8-deploy...'
+                        sh 'make k8-deploy'
                      }
                 }
             }
